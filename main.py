@@ -6,12 +6,14 @@ import os
 from dotenv import load_dotenv  # импортируем модуль из библиотеки для хранения констант в переменных среды
 import vk_api
 
+from test import change_time_post
+
 load_dotenv()  # инициализируем его. Константы хранятся в файле .env
 
 api_id = os.getenv('api_id')
 api_hash = os.getenv('api_hash')
 otloga = int(os.getenv('otloga'))
-chanel = int(os.getenv('chanel'))  # блядь, внимательно смотрим совпадение ключа здесь и в .env!!!
+chanel = int(os.getenv('chanel'))  # блядь, внимательно смотрим совпадение ключей здесь и в .env!!!
 tg_period = int(os.getenv('tg_period'))  # через сколько будет постится следующий пост в телеге
 
 with open('times.json') as json_file:  # переписываем время на текущее
@@ -30,14 +32,16 @@ def new_post(client, message):
     with open('times.json') as json_file:
         post_time = json.load(json_file)
     new_time = int(post_time['tg']) + tg_period  # прибавляем время периода в формате 18926473837636
+    time_control = change_time_post(datetime.fromtimestamp(new_time).replace(tzinfo=timezone.utc) - timedelta(hours=2))
+    new_time_control = time_control - timedelta(hours=1)
     client.copy_message(                         # отправляем сообщение в отложку основного канала
         chat_id=chanel,
         from_chat_id=message.chat.id,
         message_id=message.id,
-        schedule_date=(datetime.fromtimestamp(new_time).replace(tzinfo=timezone.utc))  # тут аккуратно - долго ебся с форматом, только с .replace(tzinfo=timezone.utc) работает
+        schedule_date= new_time_control    # тут аккуратно - долго ебся с форматом, только с .replace(tzinfo=timezone.utc) работает
     )
     print("Message uploaded to delayed publication", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-    print("Message will be published in channel in", (datetime.fromtimestamp(new_time) + timedelta(hours=3)))  # с + timedelta(hours=3) в консоль время публикации поста в канале отображается правильно!!!
+    print("Message will be published in channel in", (datetime.fromtimestamp(new_time)))  # с + timedelta(hours=3) в консоль время публикации поста в канале отображается правильно!!!
 
     post_time['tg'] = new_time                        # добавленное время записываем для следующего сообщения
     with open('times.json', 'w') as json_file:
