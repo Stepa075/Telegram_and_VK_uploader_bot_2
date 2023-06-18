@@ -6,54 +6,57 @@ from dotenv import load_dotenv
 import configparser
 
 
-# new_time = int(post_time['tg']) + 7800
-# print(new_time)
-# date_string = "16:30"
-# date = datetime.strptime(date_string, "%H:%M").replace(tzinfo=timezone.utc)
-# schedule_date = (datetime.fromtimestamp(new_time))
-# print(date)
-# print(int(datetime.now().timestamp()))
-# print(datetime.now().timestamp())
-# with open('times.json') as json_file:
-#     post_time = json.load(json_file)
-# post_time["tg"] = int(datetime.now().timestamp())
-# with open('times.json', 'w') as json_file:
-#     json.dump(post_time, json_file)
-#
-#
-# load_dotenv()
-# print(datetime.now())
+def change_time_post():
+    start_time = 6
+    end_time = 22
+    current_date_time = datetime.now()  # дата сейчас
+    current_time = current_date_time.time()  # время сейчас
+    hour = current_time.strftime('%H')  #переменная часы
+    min = current_time.strftime('%M')   # переменная минуты
+    now_day_start = current_date_time - timedelta(hours=int(hour), minutes=int(min)) + timedelta(hours=6)  # текущее время для сегодня старта
+    now_day_finish = current_date_time - timedelta(hours=int(hour), minutes=int(min)) + timedelta(hours=22)  # текущее время для сегодня финиша
+    tomorrow_day = current_date_time + timedelta(days=1)  # плюс сутки
+    tomorrow_date = tomorrow_day - timedelta(hours=int(hour), minutes=int(min))  # отнимаем текущее время
+                                                                   # чтобы получить время на начало суток
+    tomorrow_date_with_start_time = tomorrow_date + timedelta(hours=start_time)   # прибавляем время начала постинга
+    tomorrow_date_with_end_time = tomorrow_date + timedelta(hours=end_time)   # прибавляем время конца постинга
+    print(now_day_start.strftime('%Y-%m-%d %H:%M:%S'))
+    print(now_day_finish.strftime('%Y-%m-%d %H:%M:%S'))
+    # print(tomorrow_date.strftime('%Y-%m-%d %H:%M:%S'))
+    print(tomorrow_date_with_start_time.strftime('%Y-%m-%d %H:%M:%S'))
+    print(tomorrow_date_with_end_time.strftime('%Y-%m-%d %H:%M:%S'))
 
-# config = configparser.ConfigParser()  # создаём объекта парсера
-# config.read("settings.ini")  # читаем конфиг
-# a = config["Twitter"]["username"]
-# print(a)  # обращаемся как к обычному словарю!
-# f = current_date = date.today()  # берем текущую дату
-def change_time_post(x):
-    time_min = "06:00:00"
-    time_max = "22:00:00"
-    j_min = datetime.strptime(f"{time_min}", "%H:%M:%S")  # заданное время минимум
-    j_max = datetime.strptime(f"{time_max}", "%H:%M:%S")  # заданное время максимум
-    j_min_1 = j_min.time()
-    j_max_1 = j_max.time()
-    interval = 0
-    # x = (datetime.fromtimestamp(datetime.now().timestamp() + interval).replace(
-    #     tzinfo=timezone.utc))  # прибавленное к интервалу текущее время
-    x1 = x.time()
-    if j_max_1 > x1 > j_min_1:
-        b = 1
-    else:
-        b = 0
-    while b == 0:
-        interval += 3600
-        x = (datetime.fromtimestamp(datetime.now().timestamp() + interval).replace(
-            tzinfo=timezone.utc))
-        x1 = x.time()
-        if j_max_1 > x1 > j_min_1:
-            b = 1
-        else:
-            b = 0
-    print(j_min_1)
-    print(x1)
-    print(j_max_1)
-    return x
+    # print(hour)
+    # print(tomorrow_datetime)
+    # print(tomorrow_date_time_all.strftime('%Y-%m-%d %H:%M:%S'))
+    # time_min = "06:00:00"
+    # time_max = "22:00:00"
+    # j_min = datetime.strptime(f"{time_min}", "%H:%M:%S")  # заданное время минимум
+    # j_max = datetime.strptime(f"{time_max}", "%H:%M:%S")  # заданное время максимум
+    # j_min_1 = j_min.time()
+    # j_max_1 = j_max.time()
+    # interval = 7200
+    # # x = (datetime.fromtimestamp(datetime.now().timestamp() + interval).replace(
+    # #     tzinfo=timezone.utc))  # прибавленное к интервалу текущее время
+    # x1 = x.time()
+    # if j_max_1 > x1 > j_min_1:
+    #     b = 1
+    # else:
+    #     b = 0
+    # while b == 0:
+    #     x = (datetime.fromtimestamp(datetime.now().timestamp() + interval).replace(
+    #         tzinfo=timezone.utc))
+    #     interval += 3600
+    #     x1 = x.time()
+    #     if j_max_1 > x1 > j_min_1:
+    #         b = 1
+    #     else:
+    #         b = 0
+    # print(j_min_1)
+    # print(x1)
+    # print(j_max_1)
+    # return x
+
+
+if __name__ == "__main__":
+    change_time_post()

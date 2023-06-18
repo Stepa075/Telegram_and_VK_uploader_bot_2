@@ -32,8 +32,8 @@ def new_post(client, message):
     with open('times.json') as json_file:
         post_time = json.load(json_file)
     new_time = int(post_time['tg']) + tg_period  # прибавляем время периода в формате 18926473837636
-    time_control = change_time_post(datetime.fromtimestamp(new_time).replace(tzinfo=timezone.utc) - timedelta(hours=2))
-    new_time_control = time_control - timedelta(hours=1)
+    time_control = change_time_post(datetime.fromtimestamp(new_time).replace(tzinfo=timezone.utc) ) #- timedelta(hours=2)
+    new_time_control = time_control #- timedelta(hours=1)
     client.copy_message(                         # отправляем сообщение в отложку основного канала
         chat_id=chanel,
         from_chat_id=message.chat.id,
