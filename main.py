@@ -38,7 +38,7 @@ def new_post(client, message):
         chat_id=chanel,
         from_chat_id=message.chat.id,
         message_id=message.id,
-        schedule_date= datetime.fromtimestamp(new_time).replace(tzinfo=timezone.utc) - timedelta(hours=3)  #new_time_control    # тут аккуратно - долго ебся с форматом, только с .replace(tzinfo=timezone.utc) работает
+        schedule_date=datetime.fromtimestamp(new_time).replace(tzinfo=timezone.utc) - timedelta(hours=3)  #new_time_control    # тут аккуратно - долго ебся с форматом, только с .replace(tzinfo=timezone.utc) работает
     )
     print("Message uploaded to delayed publication", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     print("Message will be published in channel in", (datetime.fromtimestamp(new_time)))  # с + timedelta(hours=3) в консоль время публикации поста в канале отображается правильно!!!
