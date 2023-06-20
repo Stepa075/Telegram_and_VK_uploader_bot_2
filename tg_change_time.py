@@ -29,10 +29,20 @@ def change_time_post():
     print(tomorrow_date_with_start_time.strftime('%Y-%m-%d %H:%M:%S'))
     print(tomorrow_date_with_end_time.strftime('%Y-%m-%d %H:%M:%S'))
 
+    with open('times.json') as json_file:  # переписываем время на завтрашнее время запуска
+        post_time = json.load(json_file)
+    if post_time["tg"] < datetime.now().timestamp():  # Если время постинга уже прошло, но еще находится в разрешенном пределе  сегодня
+        post_time['tg'] = int(datetime.now().timestamp())
+        print(post_time)
+        with open('times.json', 'w') as json_file:
+            json.dump(post_time, json_file)  # вот именно таким замысловатым образом
+        print("segodnia pozge")
+    else:
+        print("vse ok budet segodnia")
+    with open('times.json') as json_file:
+        post_time = json.load(json_file)
     if current_date_time < now_day_start:  # Если пытаемся запостить до начала разрешенного времени
-        answer = "fuck malo"
-        with open('times.json') as json_file:
-            post_time = json.load(json_file)
+
         new_time = int(post_time['tg'])
         if new_time < current_date_time.timestamp():
             while current_date_time < now_day_start:
@@ -44,15 +54,13 @@ def change_time_post():
             print(post_time)
             with open('times.json', 'w') as json_file:
                 json.dump(post_time, json_file)  # вот именно таким замысловатым образом
-            print("fuck normal writing to file")
+            print("normal writing to file")
         else:
             print("working with file time")
     else:
-        print("good malo")
+        print("ne malo")
 
-    if current_date_time > now_day_finish:  # Если пытаемся запоститьпосле окончания разрешенного времени
-        answer = "fuck"
-        # if not flag_current_day_time == 0:
+    if current_date_time > now_day_finish:  # Если пытаемся запостить после окончания разрешенного времени
         with open('times.json') as json_file:  # переписываем время на завтрашнее время запуска
             post_time = json.load(json_file)
         if post_time["tg"] > tomorrow_date_with_start_time.timestamp():
@@ -64,7 +72,24 @@ def change_time_post():
                 json.dump(post_time, json_file)  # вот именно таким замысловатым образом
             print("fuck")
     else:
-        print("good")
+        print("ne mnogo")
+
+    with open('times.json') as json_file:  # переписываем время на завтрашнее время запуска
+        post_time = json.load(json_file)
+
+    if post_time["tg"] > now_day_finish.timestamp():  # Если время постинга находится вне разрешенного времени сегодня
+        with open('times.json') as json_file:  # переписываем время на завтрашнее время запуска
+            post_time = json.load(json_file)
+        if post_time["tg"] > tomorrow_date_with_start_time.timestamp():
+            pass
+        else:
+            post_time["tg"] = tomorrow_date_with_start_time.timestamp()  # int(datetime.now().timestamp())
+            print(post_time)
+            with open('times.json', 'w') as json_file:
+                json.dump(post_time, json_file)  # вот именно таким замысловатым образом
+            print("zavtra")
+    else:
+        print("ne zavtra")
 
 
 if __name__ == "__main__":
