@@ -77,7 +77,7 @@ def change_time_post():
     with open('times.json') as json_file:  # переписываем время на завтрашнее время запуска
         post_time = json.load(json_file)
 
-    if post_time["tg"] > now_day_finish.timestamp():  # Если время постинга находится вне разрешенного времени сегодня
+    if (post_time["tg"] + 3600) > now_day_finish.timestamp():  # Если время постинга находится вне разрешенного времени сегодня
         with open('times.json') as json_file:  # переписываем время на завтрашнее время запуска
             post_time = json.load(json_file)
         if post_time["tg"] > tomorrow_date_with_start_time.timestamp():

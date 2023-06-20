@@ -10,6 +10,7 @@ import os
 from dotenv import load_dotenv  # импортируем модуль из библиотеки для хранения констант в переменных среды
 
 import streams
+import variables
 from tg_change_time import change_time_post
 from vk_post_func2 import read_and_posting
 
@@ -52,11 +53,7 @@ def new_post(client, message):
         app.download_media(
             message)  # грузит отправленную КАРТИНКУ в отложку в папку downloads в корневой директории проекта
     except:
-        pass
-    try:
-        print(app.download_media(
-            message.text))  # грузит отправленную
-    except:
+        streams.post_text_message(message.text)
         pass
     post_time['tg'] = new_time  # добавленное время записываем для следующего сообщения
     with open('times.json', 'w') as json_file:
@@ -102,6 +99,7 @@ def new_post(client, message):
     #         os.remove('downloads' + '/' + elems)
 
 
-thread = Thread(target=streams.read_and_posting, daemon=True)
-thread.start()
+if posting_in_vk == 1:
+    thread = Thread(target=streams.read_and_posting, daemon=True)
+    thread.start()
 app.run()
