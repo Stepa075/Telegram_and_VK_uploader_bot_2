@@ -1,20 +1,17 @@
 import configparser
-from threading import Thread
-from time import sleep
-
-import requests
 import json
-from pyrogram import Client, filters
-from datetime import datetime, timezone, timedelta
 import os
+from datetime import datetime, timezone, timedelta
+from threading import Thread
+
 from dotenv import load_dotenv  # импортируем модуль из библиотеки для хранения констант в переменных среды
+from pyrogram import Client, filters
 
+import functions
 import streams
-import variables
 from tg_change_time import change_time_post
-from vk_post_func2 import read_and_posting
 
-load_dotenv()  # инициализируем его. Константы хранятся в файле .env
+load_dotenv()  # Инициализируем его. Константы хранятся в файле .env
 config = configparser.ConfigParser()  # создаём объекта парсера файла settings.ini
 config.read("settings.ini")
 
@@ -49,11 +46,34 @@ def new_post(client, message):
     print("Message uploaded to delayed publication", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     print("Message will be published in channel in", (datetime.fromtimestamp(new_time)))  # с + timedelta(hours=3) в
     # консоль время публикации поста в канале отображается правильно!!!
-    try:
-        app.download_media(
-            message)  # грузит отправленную КАРТИНКУ в отложку в папку downloads в корневой директории проекта
-    except:
-        streams.post_text_message(message.text)
+    if message.photo is not None:
+        try:
+            app.download_media(
+                message.photo,
+                'downloads_photo/')    # грузит отправленную КАРТИНКУ в отложку в папку downloads_photo в корневой директории проекта
+        except:
+            pass
+    elif message.video is not None:
+        try:
+            app.download_media(
+                message.video,
+                'downloads_video/')
+        except:
+            pass
+    elif message.audio is not None:
+        try:
+            app.download_media(
+                message.audio,
+                'downloads_audio/')
+        except:
+            pass
+    elif message.photo is None and message.video is None and message.audio is None and message.text is not None:
+        try:
+            streams.post_text_message(message.text)
+        except:
+            pass
+    else:
+        print("something wrong in message")
         pass
     post_time['tg'] = new_time  # добавленное время записываем для следующего сообщения
     with open('times.json', 'w') as json_file:
@@ -100,6 +120,8 @@ def new_post(client, message):
 
 
 if posting_in_vk == 1:
-    thread = Thread(target=streams.read_and_posting, daemon=True)
+    thread = Thread(target=streams.read_and_posting_photo, daemon=True)
     thread.start()
+    thread1 = Thread(target=streams.read_and_posting_video, daemon=True)
+    thread1.start()
 app.run()

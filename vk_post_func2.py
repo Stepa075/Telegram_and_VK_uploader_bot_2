@@ -7,7 +7,7 @@ import requests
 import vk_api
 from dotenv import load_dotenv
 
-load_dotenv()  # инициализируем переменные окружения. Константы хранятся в файле .env
+load_dotenv()  # Инициализируем переменные окружения. Константы хранятся в файле .env
 
 token = os.getenv('vk_token')
 session = vk_api.VkApi(token=token)
